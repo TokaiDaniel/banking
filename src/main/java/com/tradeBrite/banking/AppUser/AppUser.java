@@ -28,8 +28,7 @@ public class AppUser {
     private String name;
 
     @Column(
-            name = "balance",
-            nullable = true
+            name = "balance"
     )
     private BigDecimal balance = BigDecimal.valueOf(0);
 

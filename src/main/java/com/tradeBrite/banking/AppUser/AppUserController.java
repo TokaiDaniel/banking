@@ -17,9 +17,9 @@ public class AppUserController {
     private final AppUserService appUserService;
 
     @PostMapping("add-user/{name}")
-    public void addUser(@PathVariable(value = "name") String name, HttpServletResponse response){
+    public String addUser(@PathVariable(value = "name") String name, HttpServletResponse response){
         response.setStatus(200);
-        appUserService.createNewUser(name);
+        return appUserService.createNewUser(name);
     }
 
     @GetMapping("get-all-users")
@@ -29,21 +29,21 @@ public class AppUserController {
     }
 
     @PostMapping("deposit/{id}/{deposit}")
-    public void depositMoney(@PathVariable(value = "id") Long id, @PathVariable(value = "deposit") BigDecimal deposit,HttpServletResponse response){
+    public String depositMoney(@PathVariable(value = "id") Long id, @PathVariable(value = "deposit") BigDecimal deposit,HttpServletResponse response){
         response.setStatus(200);
-        appUserService.depositMoney(id, deposit);
+        return appUserService.depositMoney(id, deposit);
     }
 
     @PostMapping("withdraw/{id}/{withdraw}")
-    public void withdrawMoney(@PathVariable(value = "id") Long id, @PathVariable(value = "withdraw") BigDecimal withdraw,HttpServletResponse response){
+    public String withdrawMoney(@PathVariable(value = "id") Long id, @PathVariable(value = "withdraw") BigDecimal withdraw,HttpServletResponse response){
         response.setStatus(200);
-        appUserService.withdrawMoney(id, withdraw);
+        return appUserService.withdrawMoney(id, withdraw);
     }
 
     @PostMapping("transfer/{sender-id}/{receiver-id}/{transfer}")
-    public void transferMoney(@PathVariable(value = "sender-id") Long senderId, @PathVariable(value = "receiver-id") Long receiverId ,@PathVariable(value = "transfer") BigDecimal transfer, HttpServletResponse response) {
+    public String transferMoney(@PathVariable(value = "sender-id") Long senderId, @PathVariable(value = "receiver-id") Long receiverId ,@PathVariable(value = "transfer") BigDecimal transfer, HttpServletResponse response) {
         response.setStatus(200);
-        appUserService.transferMoney(senderId, receiverId, transfer);
+        return appUserService.transferMoney(senderId, receiverId, transfer);
     }
 
     @GetMapping("check-balance/{id}")

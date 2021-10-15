@@ -2,33 +2,39 @@ package com.tradeBrite.banking.AppUser;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-@Transactional
+
 public class AppUserService {
 
     private AppUserRepository appUserRepository;
 
+    @Transactional(readOnly = true)
     public List<AppUser> getAllUsers() {
         return appUserRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Optional<AppUser> getUserById(Long id) {
         return appUserRepository.findById(id);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public String createNewUser(String name) {
         AppUser appUser = new AppUser(name);
         appUserRepository.save(appUser);
         return name + " user created";
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
     public String depositMoney(Long id, BigDecimal deposit) {
         if (getUserById(id).isEmpty()) {
             return "User with the id: " + id + " not found.";
@@ -41,6 +47,7 @@ public class AppUserService {
         return deposit + " deposited to the account with the id: " + id;
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
     public String withdrawMoney(Long id, BigDecimal withdraw) {
         if (getUserById(id).isEmpty()) {
             return "User with the id: " + id + " not found.";
@@ -55,9 +62,10 @@ public class AppUserService {
         balance = balance.subtract(withdraw);
         appUser.setBalance(balance);
         appUserRepository.save(appUser);
-        return withdraw + " withdraw from the account.";
+        return withdraw + " withdraw from the account with the id: " + id;
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
     public String transferMoney(Long senderId,Long receiverId, BigDecimal transfer) {
         if (getUserById(senderId).isEmpty()) {
             return "Sender with the id: " + senderId + " not found.";
@@ -86,6 +94,7 @@ public class AppUserService {
         return "Transfer successful.";
     }
 
+    @Transactional(readOnly = true)
     public BigDecimal checkBalance(Long id) {
         if (getUserById(id).isEmpty()) {
             return null;
